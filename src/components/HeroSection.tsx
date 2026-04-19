@@ -62,6 +62,12 @@ const HeroSection = () => {
             Explore Menu
           </a>
           <a
+            href="#customize"
+            className="px-8 py-4 rounded-full bg-accent text-accent-foreground font-semibold text-lg hover:opacity-90 transition-opacity glow flex items-center justify-center gap-2"
+          >
+            🎨 Build Your Own
+          </a>
+          <a
             href="#about"
             className="px-8 py-4 rounded-full bg-foreground/10 backdrop-blur-md border border-foreground/20 font-semibold text-lg text-foreground transition-all hover:bg-foreground/15"
           >

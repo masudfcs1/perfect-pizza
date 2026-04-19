@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag } from "lucide-react";
 import { useCart } from "./CartContext";
 
-const navItems = ["Menu", "About", "Specials", "Contact"];
+const navItems = ["Menu", "Customize", "About", "Specials", "Contact"];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
