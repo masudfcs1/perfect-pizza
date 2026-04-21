@@ -25,7 +25,7 @@ const Navbar = () => {
           {navItems.map((item) => (
             <a
               key={item}
-              href={`#${item.toLowerCase()}`}
+              href={item === "Customize" ? "/customize" : `/#${item.toLowerCase()}`}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors duration-300"
             >
               {item}
@@ -52,7 +52,7 @@ const Navbar = () => {
             </AnimatePresence>
           </motion.button>
           <a
-            href="#order"
+            href="/#order"
             className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold hover:opacity-90 transition-opacity glow"
           >
             Order Now
@@ -81,7 +81,7 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <a
                   key={item}
-                  href={`#${item.toLowerCase()}`}
+                  href={item === "Customize" ? "/customize" : `/#${item.toLowerCase()}`}
                   onClick={() => setIsOpen(false)}
                   className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
                 >
@@ -89,7 +89,7 @@ const Navbar = () => {
                 </a>
               ))}
               <a
-                href="#order"
+                href="/#order"
                 className="px-6 py-2.5 rounded-full bg-primary text-primary-foreground text-sm font-semibold text-center glow"
               >
                 Order Now

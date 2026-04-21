@@ -7,9 +7,6 @@ import {
 import { useCart, SIZE_MULTIPLIER, SIZE_LABELS, type PizzaSize } from "./CartContext";
 import heroPizza from "@/assets/hero-pizza.jpg";
 
-// ═══════════════════════════════════════════════════════
-// DATA — Each option has id, name, price, emoji, desc, & color
-// ═══════════════════════════════════════════════════════
 
 interface CustomOption {
   id: string;
@@ -73,50 +70,64 @@ const STEPS = [
   { title: "Review", subtitle: "Review & Order", icon: "🎉" },
 ];
 
-// ═══════════════════════════════════════════════════════
-// STEP PROGRESS BAR
-// ═══════════════════════════════════════════════════════
 
 const StepIndicator = ({ current, total }: { current: number; total: number }) => (
-  <div className="flex items-center justify-center gap-1 sm:gap-2 mb-8">
-    {STEPS.map((step, i) => (
-      <div key={step.title} className="flex items-center">
-        <motion.button
-          className={`relative flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-4 py-2 sm:py-2.5 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-semibold transition-all duration-300 ${
-            i === current
-              ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25"
-              : i < current
-              ? "bg-primary/15 text-primary"
-              : "bg-muted text-muted-foreground"
-          }`}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <span className="text-base sm:text-lg">{step.icon}</span>
-          <span className="hidden sm:inline">{step.title}</span>
-          {i < current && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-green-500 text-white flex items-center justify-center"
-            >
-              <Check className="w-2.5 h-2.5" />
-            </motion.div>
+  <div className="flex items-center justify-center w-full max-w-4xl mx-auto mb-10 sm:mb-16 relative z-20">
+    <div className="absolute left-0 right-0 top-5 sm:top-7 h-[2px] bg-border/40 -z-10 mx-6 sm:mx-12" />
+    
+    <div className="flex justify-between w-full">
+      {STEPS.map((step, i) => (
+        <div key={step.title} className="flex relative flex-col items-center group">
+          <motion.button
+            className="relative z-10 flex flex-col items-center justify-center gap-2 sm:gap-3 outline-none"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <div className={`w-10 h-10 sm:w-14 sm:h-14 rounded-full flex items-center justify-center text-lg sm:text-2xl transition-all duration-500 shadow-lg ${
+              i === current
+                ? "bg-primary text-primary-foreground shadow-primary/40 scale-110 ring-4 ring-primary/20 ring-offset-2 ring-offset-background"
+                : i < current
+                ? "bg-primary/10 text-primary backdrop-blur-md shadow-primary/10 border-2 border-primary/30"
+                : "bg-card border-2 border-border/60 text-muted-foreground glass"
+            }`}>
+              {step.icon}
+            </div>
+
+            <div className="flex flex-col items-center">
+              <span className={`text-[9px] sm:text-[11px] font-bold tracking-wider uppercase transition-colors ${
+                i === current ? 'text-primary' : i < current ? 'text-foreground' : 'text-muted-foreground'
+              }`}>
+                {step.title}
+              </span>
+            </div>
+            
+            {i < current && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="absolute top-0 right-0 sm:-right-1 translate-x-1 sm:translate-x-0 w-4 h-4 sm:w-5 sm:h-5 rounded-full bg-green-500 text-white flex items-center justify-center shadow-md border-2 border-background"
+              >
+                <Check className="w-2.5 h-2.5 sm:w-3 sm:h-3" strokeWidth={3} />
+              </motion.div>
+            )}
+          </motion.button>
+          
+          {i < total - 1 && (
+            <div className="absolute left-[50%] top-5 sm:top-7 w-[calc(100vw/5)] sm:w-[calc(56rem/4)] max-w-[12rem] h-[2px] sm:h-[3px] -z-10 origin-left">
+              <motion.div 
+                className="h-full bg-gradient-to-r from-primary to-primary/50 shadow-[0_0_8px_rgba(var(--primary),0.5)]"
+                initial={{ width: "0%" }}
+                animate={{ width: i < current ? "100%" : "0%" }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
+              />
+            </div>
           )}
-        </motion.button>
-        {i < total - 1 && (
-          <div className={`w-4 sm:w-8 h-0.5 mx-0.5 sm:mx-1 rounded-full transition-colors duration-500 ${
-            i < current ? "bg-primary" : "bg-border"
-          }`} />
-        )}
-      </div>
-    ))}
+        </div>
+      ))}
+    </div>
   </div>
 );
 
-// ═══════════════════════════════════════════════════════
-// OPTION CARD — with emoji, price, image, and selection glow
-// ═══════════════════════════════════════════════════════
 
 const OptionCard = ({
   option,
@@ -133,16 +144,15 @@ const OptionCard = ({
     initial={{ opacity: 0, y: 30 }}
     animate={{ opacity: 1, y: 0 }}
     transition={{ delay: index * 0.08, type: "spring", stiffness: 120 }}
-    whileHover={{ scale: 1.03, y: -4 }}
-    whileTap={{ scale: 0.97 }}
+    whileHover={{ scale: 1.02, y: -4 }}
+    whileTap={{ scale: 0.98 }}
     onClick={onSelect}
-    className={`group relative p-4 sm:p-5 rounded-2xl sm:rounded-3xl border-2 text-left overflow-hidden transition-all duration-400 ${
+    className={`group relative p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] border text-left overflow-hidden transition-all duration-500 ${
       selected
-        ? "border-primary bg-primary/8 shadow-xl shadow-primary/15"
-        : "border-border bg-card hover:border-primary/30 hover:shadow-lg"
+        ? "border-primary shadow-2xl shadow-primary/20 bg-primary/5 backdrop-blur-xl"
+        : "border-border glass glass-hover hover:border-primary/40 hover:shadow-xl hover:bg-white/40 dark:hover:bg-black/40"
     }`}
   >
-    {/* Selection glow */}
     {selected && (
       <motion.div
         initial={{ opacity: 0 }}
@@ -154,7 +164,6 @@ const OptionCard = ({
       />
     )}
 
-    {/* Image thumbnail */}
     {option.image && (
       <div className="relative w-full h-20 sm:h-24 rounded-xl sm:rounded-2xl overflow-hidden mb-3 sm:mb-4">
         <img
@@ -191,7 +200,6 @@ const OptionCard = ({
       </div>
     </div>
 
-    {/* Check mark */}
     {selected && (
       <motion.div
         initial={{ scale: 0, rotate: -180 }}
@@ -204,9 +212,6 @@ const OptionCard = ({
   </motion.button>
 );
 
-// ═══════════════════════════════════════════════════════
-// TOPPING CARD — smaller, multi-select
-// ═══════════════════════════════════════════════════════
 
 const ToppingCard = ({
   topping,
@@ -223,13 +228,13 @@ const ToppingCard = ({
     initial={{ opacity: 0, scale: 0.8 }}
     animate={{ opacity: 1, scale: 1 }}
     transition={{ delay: index * 0.04, type: "spring", stiffness: 150 }}
-    whileHover={{ scale: 1.06, y: -3 }}
-    whileTap={{ scale: 0.94 }}
+    whileHover={{ scale: 1.05, y: -2 }}
+    whileTap={{ scale: 0.95 }}
     onClick={onToggle}
-    className={`relative p-3 sm:p-4 rounded-2xl border-2 text-left overflow-hidden transition-all duration-300 ${
+    className={`relative p-3 sm:p-4 rounded-xl sm:rounded-[1.25rem] border text-left overflow-hidden transition-all duration-300 ${
       selected
-        ? "border-primary bg-primary/10 shadow-lg shadow-primary/15"
-        : "border-border bg-card hover:border-primary/30"
+        ? "border-primary shadow-lg shadow-primary/20 bg-primary/5 backdrop-blur-md"
+        : "border-border glass glass-hover hover:border-primary/40 hover:bg-white/40 dark:hover:bg-black/40"
     }`}
   >
     <div className="flex items-center gap-2 sm:gap-3">
@@ -262,9 +267,6 @@ const ToppingCard = ({
   </motion.button>
 );
 
-// ═══════════════════════════════════════════════════════
-// LIVE PIZZA PREVIEW — animated layered circles
-// ═══════════════════════════════════════════════════════
 
 const TOPPING_POSITIONS = [
   // ring 1 - inner
@@ -290,10 +292,8 @@ const PizzaPreview = ({
 }) => {
   return (
     <div className="relative w-56 h-56 sm:w-72 sm:h-72 mx-auto">
-      {/* Plate / shadow */}
       <div className="absolute inset-[-8%] rounded-full bg-foreground/5 blur-xl" />
 
-      {/* Crust layer */}
       <motion.div
         animate={{
           scale: crust ? 1 : 0.3,
@@ -309,7 +309,6 @@ const PizzaPreview = ({
         }}
       />
 
-      {/* Crust edge detail */}
       {crust && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -322,7 +321,6 @@ const PizzaPreview = ({
         />
       )}
 
-      {/* Sauce layer */}
       <motion.div
         animate={{
           scale: sauce ? 1 : 0,
@@ -337,7 +335,6 @@ const PizzaPreview = ({
         }}
       />
 
-      {/* Cheese layer */}
       <motion.div
         animate={{
           scale: cheese ? 1 : 0,
@@ -353,7 +350,6 @@ const PizzaPreview = ({
         }}
       />
 
-      {/* Cheese dots pattern */}
       {cheese && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -370,7 +366,6 @@ const PizzaPreview = ({
         </motion.div>
       )}
 
-      {/* Toppings */}
       <AnimatePresence>
         {toppings.map((t, i) => {
           const pos = TOPPING_POSITIONS[i % TOPPING_POSITIONS.length];
@@ -395,7 +390,6 @@ const PizzaPreview = ({
         })}
       </AnimatePresence>
 
-      {/* Steam animation */}
       {(crust || sauce) && (
         <>
           {[0, 1, 2].map((i) => (
@@ -421,26 +415,22 @@ const PizzaPreview = ({
         </>
       )}
 
-      {/* Empty state */}
       {!crust && !sauce && !cheese && toppings.length === 0 && (
         <motion.div
-          animate={{ opacity: [0.3, 0.6, 0.3] }}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="absolute inset-0 flex items-center justify-center"
+          animate={{ opacity: [0.4, 0.8, 0.4], scale: [0.95, 1.05, 0.95] }}
+          transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 flex flex-col items-center justify-center"
         >
-          <div className="text-center">
-            <span className="text-4xl sm:text-5xl">🍽️</span>
-            <p className="text-xs text-muted-foreground mt-2 font-medium">Start building!</p>
+          <div className="w-28 h-28 sm:w-36 sm:h-36 rounded-full border-2 border-dashed border-primary/30 flex items-center justify-center mb-4 text-4xl sm:text-5xl bg-primary/5 backdrop-blur-sm shadow-[inset_0_0_20px_rgba(var(--primary),0.1)]">
+            🍽️
           </div>
+          <p className="text-xs sm:text-sm font-bold uppercase tracking-widest text-primary/70">Start building</p>
         </motion.div>
       )}
     </div>
   );
 };
 
-// ═══════════════════════════════════════════════════════
-// PRICE BREAKDOWN
-// ═══════════════════════════════════════════════════════
 
 const PriceBreakdown = ({
   crust,
@@ -513,9 +503,6 @@ const PriceBreakdown = ({
   );
 };
 
-// ═══════════════════════════════════════════════════════
-// REVIEW STEP
-// ═══════════════════════════════════════════════════════
 
 const ReviewStep = ({
   crust,
@@ -557,12 +544,10 @@ const ReviewStep = ({
         Your Custom Creation
       </h3>
 
-      {/* Selected items summary */}
       <div className="space-y-3 p-4 rounded-2xl bg-muted/50 border border-border">
         <PriceBreakdown crust={crust} sauce={sauce} cheese={cheese} toppings={toppings} size={size} />
       </div>
 
-      {/* Size selector */}
       <div>
         <h4 className="font-display font-semibold text-lg mb-3">Choose Size</h4>
         <div className="grid grid-cols-3 gap-3">
@@ -572,10 +557,10 @@ const ReviewStep = ({
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               onClick={() => setSize(s)}
-              className={`relative p-3 sm:p-4 rounded-2xl border-2 transition-all duration-300 text-center ${
+              className={`relative p-3 sm:p-4 rounded-2xl border transition-all duration-300 text-center ${
                 size === s
-                  ? "border-primary bg-primary/10 shadow-lg shadow-primary/15"
-                  : "border-border hover:border-primary/30 bg-card"
+                  ? "border-primary bg-primary/10 shadow-lg shadow-primary/15 backdrop-blur-md"
+                  : "border-border glass glass-hover hover:border-primary/30"
               }`}
             >
               <motion.div
@@ -595,7 +580,6 @@ const ReviewStep = ({
         </div>
       </div>
 
-      {/* Quantity & Add to Cart */}
       <div className="flex items-center gap-4 pt-2">
         <div className="flex items-center gap-3 bg-card rounded-2xl border border-border p-2">
           <motion.button
@@ -661,9 +645,6 @@ const ReviewStep = ({
   );
 };
 
-// ═══════════════════════════════════════════════════════
-// MAIN COMPONENT
-// ═══════════════════════════════════════════════════════
 
 const PizzaCustomizer = () => {
   const { addToCart, setIsOpen: setCartOpen } = useCart();
@@ -744,14 +725,12 @@ const PizzaCustomizer = () => {
 
   return (
     <section id="customize" className="py-20 sm:py-28 px-4 sm:px-6 relative overflow-hidden">
-      {/* Background accent */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/3 w-96 h-96 rounded-full bg-primary/5 blur-3xl" />
         <div className="absolute bottom-0 right-1/4 w-80 h-80 rounded-full bg-accent/5 blur-3xl" />
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -776,15 +755,11 @@ const PizzaCustomizer = () => {
           </p>
         </motion.div>
 
-        {/* Step indicator */}
         <StepIndicator current={step} total={STEPS.length} />
 
-        {/* Main builder area */}
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 sm:gap-8">
-          {/* Options panel — 3 cols on large screens */}
           <div className="lg:col-span-3 order-2 lg:order-1">
             <AnimatePresence mode="wait">
-              {/* STEP 0: Crust */}
               {step === 0 && (
                 <motion.div
                   key="crust"
@@ -814,7 +789,6 @@ const PizzaCustomizer = () => {
                 </motion.div>
               )}
 
-              {/* STEP 1: Sauce */}
               {step === 1 && (
                 <motion.div
                   key="sauce"
@@ -844,7 +818,6 @@ const PizzaCustomizer = () => {
                 </motion.div>
               )}
 
-              {/* STEP 2: Cheese */}
               {step === 2 && (
                 <motion.div
                   key="cheese"
@@ -874,7 +847,6 @@ const PizzaCustomizer = () => {
                 </motion.div>
               )}
 
-              {/* STEP 3: Toppings */}
               {step === 3 && (
                 <motion.div
                   key="toppings"
@@ -893,7 +865,6 @@ const PizzaCustomizer = () => {
                     </div>
                   </div>
 
-                  {/* Category headers */}
                   <div className="mb-3">
                     <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-2">
                       🥩 Premium Meats
@@ -928,7 +899,6 @@ const PizzaCustomizer = () => {
                     </div>
                   </div>
 
-                  {/* Topping image reference */}
                   <div className="mt-4 sm:mt-6 rounded-2xl overflow-hidden border border-border">
                     <img
                       src="/topping-options.png"
@@ -940,7 +910,6 @@ const PizzaCustomizer = () => {
                 </motion.div>
               )}
 
-              {/* STEP 4: Review */}
               {step === 4 && (
                 <ReviewStep
                   key="review"
@@ -958,7 +927,6 @@ const PizzaCustomizer = () => {
               )}
             </AnimatePresence>
 
-            {/* Navigation buttons */}
             <div className="flex items-center justify-between mt-6 sm:mt-8 gap-3">
               <motion.button
                 whileHover={{ scale: 1.03 }}
@@ -996,7 +964,6 @@ const PizzaCustomizer = () => {
             </div>
           </div>
 
-          {/* Preview panel — 2 cols on large screens */}
           <div className="lg:col-span-2 order-1 lg:order-2">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -1004,15 +971,15 @@ const PizzaCustomizer = () => {
               viewport={{ once: true }}
               className="lg:sticky lg:top-28 space-y-4 sm:space-y-6"
             >
-              {/* Visual pizza */}
-              <div className="p-6 sm:p-8 rounded-2xl sm:rounded-3xl bg-card border border-border shadow-xl">
-                <div className="text-center mb-4">
-                  <h3 className="font-display font-bold text-base sm:text-lg">Your Pizza Preview</h3>
-                  <p className="text-xs text-muted-foreground">Watch it come to life!</p>
+              <div className="p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] glass border border-white/20 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] relative overflow-hidden">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-[120%] rounded-full bg-gradient-to-tr from-primary/10 to-accent/10 blur-[80px] pointer-events-none -z-10" />
+                
+                <div className="text-center mb-6 sm:mb-8">
+                  <h3 className="font-display font-bold text-xl sm:text-2xl mb-1">Your Pizza Preview</h3>
+                  <p className="text-xs sm:text-sm text-muted-foreground font-medium uppercase tracking-wider">Watch it come to life</p>
                 </div>
 
                 <div className="relative">
-                  {/* Slow rotation wrapper */}
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 60, repeat: Infinity, ease: "linear" }}
@@ -1021,7 +988,6 @@ const PizzaCustomizer = () => {
                   </motion.div>
                 </div>
 
-                {/* Quick summary under preview */}
                 <div className="mt-4 sm:mt-6 flex flex-wrap gap-1.5 sm:gap-2 justify-center">
                   {crust && (
                     <motion.span
@@ -1063,12 +1029,12 @@ const PizzaCustomizer = () => {
                 </div>
               </div>
 
-              {/* Running price card */}
               <motion.div
                 layout
-                className="p-4 sm:p-5 rounded-2xl sm:rounded-3xl bg-card border border-border"
+                className="p-5 sm:p-6 rounded-[1.5rem] sm:rounded-[2rem] glass border border-white/20 shadow-lg relative overflow-hidden"
               >
-                <h4 className="font-display font-semibold text-sm mb-3 flex items-center gap-2">
+                <div className="absolute -top-12 -right-12 w-24 h-24 bg-primary/20 blur-[40px] rounded-full pointer-events-none" />
+                <h4 className="font-display font-semibold text-lg mb-4 flex items-center gap-2">
                   💰 Price Breakdown
                 </h4>
                 <PriceBreakdown
