@@ -60,7 +60,7 @@ const PizzaCard = ({ pizza, index, onViewDetail }: { pizza: typeof pizzas[0]; in
       }}
       className="group relative rounded-3xl overflow-hidden bg-card border border-border"
     >
-      {/* Cursor glow */}
+    
       <AnimatePresence>
         {isHovered && (
           <motion.div
@@ -100,7 +100,7 @@ const PizzaCard = ({ pizza, index, onViewDetail }: { pizza: typeof pizzas[0]; in
           {pizza.tag}
         </motion.div>
 
-        {/* Hover view button */}
+        
         <AnimatePresence>
           {isHovered && (
             <motion.div
